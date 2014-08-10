@@ -1,6 +1,6 @@
 =head1 NAME
 
-OneTool::LogManagement::Server::App - Module handling everything for onetool_logmanagement_server.pl
+OneTool::LogManagement::Server::Command - Module handling everything for onetool_logmanagement_server.pl
 
 =head1 DESCRIPTION
 
@@ -14,15 +14,23 @@ onetool_logmanagement_server.pl [options]
 
 =over 8
 
+=item B<-D,--debug>
+
+Sets Debug mode
+
 =item B<-h,--help>
 
 Prints this Help
+
+=item B<-v,--version>
+
+Prints version
 
 =back
 
 =cut
 
-package OneTool::LogManagement::Server::App;
+package OneTool::LogManagement::Server::Command;
 
 use strict;
 use warnings;
@@ -39,51 +47,31 @@ use OneTool::LogManagement::Server;
 
 __PACKAGE__->run(@ARGV) unless caller;
 
+my $PROGRAM = 'onetool_logmanagement_server.pl';
+
 =head1 SUBROUTINES/METHODS
 
-=head2 Daemon()
+=head2 Daemon_Start()
 
 Launch OneTool LogManagement Server as Daemon
 
 =cut
 
-sub Daemon
+sub Daemon_Start
 {
     my $server = OneTool::LogManagement::Server->new();
 
-    printf "Daemon !";
     if (fork())
     {    #father -> API Listener
         $server->Listener();
     }
 
-=head2 comment
-    else
-    { #child -> monitoring loop
-        $server->Log('info', 'Monitoring Server Loop Started !');
-        while (1)
-        {
-            foreach my $device (@{$server->{devices}})
-            {
-                my $time = time();
-                $device->{last_check} = 0    if (!defined $device->{last_check});
-                if (($time - $device->{last_check}) >= $device->{interval})
-                {
-                    $server->Log('debug', "Device '$device->{name}'");
-                    #my $result = $agent->Check($check->{name});
-                    #$check->Data_Write($result) if (defined $result);
-                    $device->{last_check} = $time;
-                }
-            }
-            sleep(1);
-        }
-    }
-=cut
-
     return (undef);
 }
 
 =head2 run(@ARGV)
+
+Runs Command Line
 
 =cut
 
@@ -93,8 +81,6 @@ sub run
     my %opt  = ();
 
     local @ARGV = @_;
-
-    printf "%s\n", join(',', @ARGV);
     my @options = @OneTool::App::DEFAULT_OPTIONS;
     push @options, 'start', 'stop';
     my $status = GetOptions(\%opt, @options);
@@ -106,10 +92,10 @@ sub run
         
     if ($opt{version})
     {
-        printf "OneTool v%s\n", $OneTool::VERSION;
+        printf "%s v%s\n", $PROGRAM, $OneTool::LogManagement::Server::VERSION;
     }
 
-    Daemon() if ($opt{start});
+    Daemon_Start() if ($opt{start});
 
     return ($status);
 }

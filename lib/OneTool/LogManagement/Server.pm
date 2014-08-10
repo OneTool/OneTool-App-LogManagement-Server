@@ -20,6 +20,7 @@ use OneTool::Configuration;
 use OneTool::LogManagement::Server::API qw( %server_api );
 
 my $FILE_LOG = "$FindBin::Bin/../conf/itt_logmanagement_server.log.conf";
+our $VERSION = $OneTool::VERSION . '.1';
 
 =head1 MOOSE OBJECT
 

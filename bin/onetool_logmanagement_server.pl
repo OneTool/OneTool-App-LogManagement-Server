@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-onetool_logmanagement_server - LogManagement Server Program from the OneTool Suite
+onetool_logmanagement_server.pl - LogManagement Server Program from the OneTool Suite
 
 =cut
 
@@ -13,9 +13,9 @@ use FindBin;
 
 use lib "$FindBin::Bin/../lib/";
 
-use OneTool::LogManagement::Server::App;
+use OneTool::LogManagement::Server::Command;
 
-OneTool::LogManagement::Server::App->run(@ARGV);
+OneTool::LogManagement::Server::Command->run();
 
 =head1 AUTHOR
 
